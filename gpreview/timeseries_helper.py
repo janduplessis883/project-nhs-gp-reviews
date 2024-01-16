@@ -1,5 +1,7 @@
 import pandas as pd
 import matplotlib.pyplot as plt
+import seaborn as sns
+import plotly.express as px
 
 
 class TimeSeriesHelper:
@@ -15,7 +17,7 @@ class TimeSeriesHelper:
         :param datetime_col: Name of the column with datetime data.
         :param count_col: Name of the column with count data.
         :param freq: Frequency for resampling ('D' for day, 'M' for month, 'Y' for year).
-        :param agg_method: Method for aggregation (sum, mean, etc.).
+        :param agg_method: Method for aggregation (sum, mean, count,etc.).
         :param date_format: The format of the dates in the datetime_col.
         """
         # Convert the datetime column based on the specified format
@@ -32,36 +34,65 @@ class TimeSeriesHelper:
             self.ts = df[count_col].resample(freq).sum()
         elif agg_method == "mean":
             self.ts = df[count_col].resample(freq).mean()
+        elif agg_method == "count":
+            self.ts = df[count_col].resample(freq).count()
         # More aggregation methods can be added here
 
         return self.ts
 
-    def plot_timeseries(self, figsize=(10, 6), title="Time Series Plot", color="blue"):
+    def plot_timeseries(
+        self,
+        package="seaborn",
+        figsize=(10, 6),
+        title="Time Series Plot",
+        color="blue",
+        line_thickness=4,
+    ):
         """
         Plot the time series with custom color.
+        :param package: The plotting package to use ('seaborn' or 'plotly').
         :param figsize: Size of the figure.
         :param title: Title of the plot.
         :param color: Color of the line plot.
         """
         if self.ts is not None:
-            ax = self.ts.plot(kind="line", figsize=figsize, color=color)
-            ax.set_xlabel("Date")
-            ax.set_ylabel("Count")
-            ax.set_title(title)
+            if package == "seaborn":
+                # Create a figure and axis with Matplotlib
+                fig, ax = plt.subplots(figsize=figsize)
 
-            # Rotate x-axis labels
-            plt.xticks(rotation=45)
+                # Use Seaborn to create the line plot on the created axis
+                sns.lineplot(ax=ax, data=self.ts, color=color, linewidth=line_thickness)
 
-            # Remove the top, left, and right spines
-            ax.spines["top"].set_visible(False)
-            ax.spines["right"].set_visible(False)
-            ax.spines["left"].set_visible(False)
+                ax.set_xlabel("Date")
+                ax.set_ylabel("Count")
+                ax.set_title(title)
 
-            # Set gridlines
-            ax.yaxis.grid(True)  # Horizontal grid
-            ax.xaxis.grid(False)  # No vertical grid
+                # Customize spines and gridlines
+                ax.spines["top"].set_visible(False)
+                ax.spines["right"].set_visible(False)
+                ax.spines["left"].set_visible(False)
+                ax.yaxis.grid(
+                    True, linestyle="--", linewidth=0.5, color="#888888", alpha=0.8
+                )
+                ax.xaxis.grid(
+                    True, linestyle="--", linewidth=0.5, color="#888888", alpha=0.8
+                )
 
-            plt.show()
+                plt.show()
+
+            elif package == "plotly":
+                # Use Plotly to create the line plot
+                fig = px.line(
+                    self.ts, y=self.ts.name, title=title, template="plotly_white"
+                )
+
+                # Customize the plotly figure
+                fig.update_traces(line=dict(color=color, width=line_thickness))
+                fig.update_layout(
+                    xaxis_title="Date", yaxis_title="Count", plot_bgcolor="white"
+                )
+
+                fig.show()
         else:
             print("No time series data available. Please run to_timeseries first.")
 

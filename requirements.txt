@@ -36,3 +36,4 @@ pytest-asyncio
 gspread
 streamlit
 black
+plotly
