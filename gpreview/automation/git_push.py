@@ -5,8 +5,8 @@ from colorama import Fore, init, Back
 
 init(autoreset=True)
 
-from inforcast.params import LOCAL_GIT_REPO
-from inforcast.utils import time_it
+from gpreview.params import LOCAL_GIT_REPO
+from gpreview.utils import time_it
 
 repo_path = LOCAL_GIT_REPO
 

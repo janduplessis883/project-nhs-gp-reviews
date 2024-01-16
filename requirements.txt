@@ -35,5 +35,4 @@ pytest-asyncio
 # Package specific
 gspread
 streamlit
-
-
+black
