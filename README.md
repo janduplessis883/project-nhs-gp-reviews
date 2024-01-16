@@ -1,3 +1,3 @@
 # **Project NHS GP Reviews**
 
-![NHS](https://github.com/janduplessis883/project-nhs-gp-reviews/blob/master/images/nhs_logo2.png?raw=true)
+<img src="https://github.com/janduplessis883/project-nhs-gp-reviews/blob/master/images/nhs_logo2.png?raw=true" width="500"/>
